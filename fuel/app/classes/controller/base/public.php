@@ -37,8 +37,6 @@ class Controller_Base_Public extends Controller
      
 		// Set a global variable so views can use it
 		View::set_global('current_user', $this->current_user);
-        
-        $this->getModuleRoutes();
     }
 
     public function after($response)
@@ -53,17 +51,4 @@ class Controller_Base_Public extends Controller
         return parent::after($response);
     }
 
-    public function getModuleRoutes()
-    {
-
-        $route = \Finder::instance();
-
-
-        \Debug::dump(\Router::routes());
-        foreach (\File::read_dir(MODULESPATH) as $module => $module_dir) {
-            $route->add_path(MODULESPATH.$module);
-        }
-
-        \Debug::dump($route->list_files('config', 'routes.php'));
-    }
 }

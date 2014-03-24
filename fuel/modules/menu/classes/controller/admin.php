@@ -2,8 +2,9 @@
 
 namespace Menu;
 
-class Controller_Admin_Menu extends \Controller_Base_Admin
+class Controller_Admin extends \Controller_Base_Admin
 {
+    public $module = 'menu';
 
     public function before() {
         if (\Input::is_ajax())
@@ -38,6 +39,8 @@ class Controller_Admin_Menu extends \Controller_Base_Admin
     {
 
         $id = $this->param('id');
+
+
 
         if ($id == null)
         {
@@ -261,17 +264,12 @@ class Controller_Admin_Menu extends \Controller_Base_Admin
         $this->data['form'] = $form;
         $this->data['formLang'] = $formLang;
 
-        \Debug::dump($form);
         \Debug::dump($formLang);
-
-
-        return $this->theme->get_template()->set( 'content', 'dfdf' );     
-        
-        return $this->theme
+        /*return $this->theme
                 ->get_template()
                 ->set(  'content', 
                         \Theme::instance()->view('admin/add', $this->data, null, false)
-                    );  
+                    );  */
         //$this->theme->set_partial('content', 'backend/add')->set($this->data, null, false);
     }
 

@@ -3,7 +3,7 @@
     <div class="col-lg-6">
         <h3><?= __('menu.menu.config'); ?></h3>
         <div class="well">
-            <?= $formLang->field('language')->set_attribute(array('class' => 'form-control')); ?>
+            <?//= $formLang->field('language')->set_attribute(array('class' => 'form-control')); ?>
             <?= $form->field('slug')->set_attribute(array('class' => 'form-control')); ?>
             <?= $formLang->field('text')->set_attribute(array('class' => 'form-control')); ?>
             <?= $formLang->field('title')->set_attribute(array('class' => 'form-control')); ?>
