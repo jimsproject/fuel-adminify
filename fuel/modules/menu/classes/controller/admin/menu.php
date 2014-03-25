@@ -98,9 +98,10 @@ class Controller_Admin_Menu extends \Controller_Base_Admin
         //$this->theme->set_partial('content', 'admin/index')
     }    
 
-    public function action_view($id=null)
+    public function action_view()
     {
 
+        $id = $this->param('id');   
         // In sub menu
         $this->data['menuParent'] = $menuParent = \LbMenu\Model_Menu::find($id);
         $this->data['menus'] = $menus = $menuParent->children()->get();
@@ -165,6 +166,7 @@ class Controller_Admin_Menu extends \Controller_Base_Admin
     {
         // Get id menu and id parent if exist
         $id       = $this->param('id');
+                
         //$parentId = $this->param('parent');
 
         // Set some data to view
