@@ -34,7 +34,8 @@ class Controller_Base_Public extends Controller
             $user = \Warden::current_user();
             $this->current_user = $user->username;
         }
-     
+        
+        $this->setDefaultAssets();
 		// Set a global variable so views can use it
 		View::set_global('current_user', $this->current_user);
     }
@@ -49,6 +50,31 @@ class Controller_Base_Public extends Controller
         }
 
         return parent::after($response);
+    }
+
+    public function setDefaultAssets()
+    {
+
+        $activeTheme = $this->theme->active();
+        \Casset::add_path('theme', $activeTheme['asset_base']);
+
+        $this->addAsset(array(
+            'assets/jquery.min.js',
+            'assets/bootstrap.min.js',
+        ), 'js', 'js_core');
+        
+        $this->addAsset(array(
+            'assets/bootstrap.min.css',
+        ), 'css', 'css_core');
+        
+
+    }
+
+    public function addAsset($files, $type, $group, $attr = array(), $raw = false)
+    {
+        foreach((array)$files as $file) {
+                \Casset::{$type}('theme::'.$file, false, $group);
+        }
     }
 
 }

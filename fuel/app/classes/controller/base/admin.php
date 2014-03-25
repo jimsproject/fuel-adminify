@@ -57,8 +57,6 @@ class Controller_Base_Admin extends Controller
 			}
 		}
 
-		parent::before();
-
 		// load the theme template
         $this->theme = \Theme::instance();
 
@@ -68,6 +66,7 @@ class Controller_Base_Admin extends Controller
 
         // set the page template
         $this->theme->set_template('layouts/default');
+        $this->theme->set_partial('meta', 'partials/meta')->set('title', ucfirst($request->module));
         $this->theme->set_partial('navigation', 'partials/navigation');
         $this->theme->set_partial('sidebar', 'partials/sidebar');
         //set the active module as page title - can be overwritten in the module action
@@ -77,6 +76,8 @@ class Controller_Base_Admin extends Controller
         $user = \Warden::current_user();
         $this->current_user = $user->username;
         View::set_global('current_user', $this->current_user);
+
+        $this->setDefaultAssets();
 	}
 
 	public function after($response)
@@ -89,5 +90,47 @@ class Controller_Base_Admin extends Controller
         }
 
         return parent::after($response);
+    }
+
+    public function setDefaultAssets()
+    {
+
+        $activeTheme = $this->theme->active();
+        \Casset::add_path('theme', $activeTheme['asset_base']);
+
+        $this->addAsset(array(
+            'jquery.min.js',
+            'jquery.ui.js',
+            'bootstrap.min.js',
+            'classie.js',
+            'bootstrap-navigation.js'
+        ), 'js', 'js_core');
+
+        $this->addAsset(array(
+            'jquery.nestedsortable.js',
+            'theme-adminify.js'
+        ), 'js', 'js_footer');
+        
+        $this->addAsset(array(
+            'bootstrap.min.css',
+            'bootstrap-mobile-navigation.css',
+            'flatui-buttons.css',
+            '../font-awesome/css/font-awesome.min.css',
+            'theme-adminify.css'
+        ), 'css', 'css_core');
+
+         $this->addAsset(array(
+            'theme-adminify.css'
+        ), 'css', 'css_theme');
+
+        
+
+    }
+
+    public function addAsset($files, $type, $group, $attr = array(), $raw = false)
+    {
+        foreach((array)$files as $file) {
+                \Casset::{$type}('theme::'.$file, false, $group);
+        }
     }
 }

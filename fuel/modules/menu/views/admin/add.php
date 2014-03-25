@@ -1,9 +1,12 @@
 <?= \Form::open(array('role' => 'form', 'class' => 'form-horizontal')); ?>
+
+<?= \Form::csrf(); ?>
+
 <div class="row">
     <div class="col-lg-6">
         <h3><?= __('menu.menu.config'); ?></h3>
         <div class="well">
-            <?//= $formLang->field('language')->set_attribute(array('class' => 'form-control')); ?>
+            <?= $formLang->field('language')->set_attribute(array('class' => 'form-control')); ?>
             <?= $form->field('slug')->set_attribute(array('class' => 'form-control')); ?>
             <?= $formLang->field('text')->set_attribute(array('class' => 'form-control')); ?>
             <?= $formLang->field('title')->set_attribute(array('class' => 'form-control')); ?>
@@ -105,7 +108,7 @@
             if ($idRoot) dataReq['idRoot'] = $idRoot;
 
             var request = $.ajax({
-                url: '/menu/admin/index/api/get_eav.json',
+                url: '/menu/api/eav.json',
                 type: 'GET',
                 data: dataReq,
                 dataType: 'json'
@@ -140,8 +143,8 @@
             classNames: {checkbox: "dynatree-radio"},
             selectMode: 1,
             initAjax: {
-                url: '/menu/admin/index/api/show_menus.json',
-                data: {idSelect: $('#activeNode').val(), show_none: 0 <?php if($isUpdate) echo ', idMenu: "'.$menu->id.'"'; ?>}
+                url: '/menu/api/show.json',
+                data: {idSelect: $('#activeNode').val(), show_none: 0}
             },
             onSelect: function(select, node) {
                 $('#activeNode').val(node.data.key);
@@ -171,7 +174,7 @@
             bootbox.confirm("<?= __('menu.menu.change_lang_confirm'); ?>", function(result) {
                   if (result) {
                       var request = $.ajax({
-                          url: '/menu/admin/index/api/get_menu_lang.json',
+                          url: '/menu/api/lang.json',
                           type: 'GET',
                           data: {id: $('#id_menu').val(), lang: $('#form_language').val()},
                           dataType: 'json'

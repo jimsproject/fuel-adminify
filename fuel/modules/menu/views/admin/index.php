@@ -48,8 +48,6 @@
 
 <a href="<?= \Router::get('menu_admin_add'); ?>" class="btn btn-primary"><i class="fa fa-plus"></i> <?= __('menu.action.create'); ?></a>
 
-<?php \Debug::dump(\Router::get('menu_admin_add') ); ?>
-
 <?php if(isset($menuParent)): ?>
 	<a href="<?= \Router::get('menu_admin_add_to_parent', array('parent' => $menuParent->id)); ?>" class="btn btn-info"><i class="fa fa-plus"></i> <?= __('menu.action.add_link'); ?></a>
 <?php endif; ?>

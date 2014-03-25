@@ -275,7 +275,8 @@ return array(
 		 	'email',
 		 	'warden',
 		 	'breadcrumb',
-		 	'lbMenu'
+		 	'lbMenu',
+		 	'casset'
 		),
 
 		/**
