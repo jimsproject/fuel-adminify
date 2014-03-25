@@ -261,16 +261,16 @@ class Controller_Admin_Menu extends \Controller_Base_Admin
         $this->data['form'] = $form;
         $this->data['formLang'] = $formLang;
 
-        \Debug::dump($form);
-        \Debug::dump($formLang);
+        //\Debug::dump($form);
+       // \Debug::dump($formLang);
 
 
-        return $this->theme->get_template()->set( 'content', 'dfdf' );     
+        //return $this->theme->get_template()->set( 'content', 'dfdf' );     
         
         return $this->theme
                 ->get_template()
                 ->set(  'content', 
-                        \Theme::instance()->view('admin/add', $this->data, null, false)
+                        \Theme::instance()->view('admin/add')->set($this->data, null, false)
                     );  
         //$this->theme->set_partial('content', 'backend/add')->set($this->data, null, false);
     }
