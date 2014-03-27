@@ -6,9 +6,14 @@ This Repository includes not all files!
 * Sources - https://github.com/Pseudoagentur/Bootstrap-Adminify-Sources
 * HTML only - https://github.com/Pseudoagentur/Bootstrap-Adminify
 
-# Fuel Administrator
+
+# Fuel Adminify
 
 Version 2.0 - FuelPHP 1.7.1
+
+# Requirements
+
+* PHP5.4 or higher
 
 ## What is Fuel Administrator?
 

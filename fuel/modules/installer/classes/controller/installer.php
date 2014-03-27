@@ -44,12 +44,12 @@ class Controller_Installer extends \Controller {
      */
     private static $config = array();
 
-	public function before() {
-		parent::before();
+    public function before() {
+        parent::before();
 
-		$this->theme = \Theme::instance();
-		$this->theme->active('installer');
-		$this->theme->set_template('layouts/default');
+        $this->theme = \Theme::instance();
+        $this->theme->active('installer');
+        $this->theme->set_template('layouts/default');
 
         $this->theme->set_partial('navigation', 'partials/navigation')->set('active', '');
         $this->theme->set_partial('alert_messages', 'partials/alert_messages');
@@ -58,7 +58,7 @@ class Controller_Installer extends \Controller {
         if(\Config::get('website.installed')) {
             \Response::redirect('/');
         }
-	}
+    }
 
     public function after($response)
     {
@@ -72,31 +72,31 @@ class Controller_Installer extends \Controller {
         return parent::after($response);
     }
 
-	/**
-	 * Installer start point
-	 */
-	public function action_index() {
+    /**
+     * Installer start point
+     */
+    public function action_index() {
 
-		
+        
         $this->theme->get_partial('navigation', 'partials/navigation')->set('active', 'start');
         return $this->theme
                 ->get_template()
                 ->set(  'content', 
                         \Theme::instance()->view('start')
                     );
-	}
+    }
 
     /**
      * Check file permissions
      */
-	public function action_systemcheck() {
+    public function action_systemcheck() {
 
-		$data['php']		= (version_compare(phpversion(), '5.3.3', '<') ) ? false : true;
-		$data['config']		= \File::get_permissions(APPPATH.'config/');
-		$data['tmp']		= \File::get_permissions(APPPATH.'tmp/');
-		$data['cache']		= \File::get_permissions(APPPATH.'cache/');
-		$data['logs']		= \File::get_permissions(APPPATH.'logs/');
-		$data['next_step']	= ($data['php'] && $data['config'] == "0777" && $data['tmp'] == "0777" && $data['cache'] == "0777" && $data['logs'] == "0777" ) ? true : false;
+        $data['php']        = (version_compare(phpversion(), '5.3.3', '<') ) ? false : true;
+        $data['config']     = \File::get_permissions(APPPATH.'config/');
+        $data['tmp']        = \File::get_permissions(APPPATH.'tmp/');
+        $data['cache']      = \File::get_permissions(APPPATH.'cache/');
+        $data['logs']       = \File::get_permissions(APPPATH.'logs/');
+        $data['next_step']  = ($data['php'] && $data['config'] == "0777" && $data['tmp'] == "0777" && $data['cache'] == "0777" && $data['logs'] == "0777" ) ? true : false;
 
         $this->theme->get_partial('navigation', 'partials/navigation')->set('active', 'systemcheck');
         return $this->theme
@@ -104,12 +104,12 @@ class Controller_Installer extends \Controller {
                 ->set(  'content', 
                         \Theme::instance()->view('systemcheck', $data)
                     );
-	}
+    }
 
     /**
      * Database configuration
      */
-	public function action_settings() {
+    public function action_settings() {
 
         $data['next_step']  = false;
 
@@ -226,12 +226,12 @@ class Controller_Installer extends \Controller {
                 ->set(  'content', 
                         \Theme::instance()->view('settings', $data)
                     );
-	}
+    }
 
     /** 
      * run all existing migrations
      */
-	public function action_database() {
+    public function action_database() {
 
 
         //\Debug::dump(\Migrate::latest());
@@ -252,7 +252,7 @@ class Controller_Installer extends \Controller {
 
         //set flash message and go to the next phase
         \Messages::success('All tables has been created successfully.');
-        \Response::redirect('installer/admin');
+       // \Response::redirect('installer/admin');
 
         //if you want to show some information after running the all migrations
         //you can use the pre defined view - currently it includes only the button 
@@ -263,12 +263,12 @@ class Controller_Installer extends \Controller {
                 ->set(  'content', 
                         \Theme::instance()->view('database')
                     );
-	}
+    }
 
     /**
      * create the admin user
      */
-	public function action_admin() {
+    public function action_admin() {
 
         $data['next_step']  = false;
 
@@ -333,9 +333,9 @@ class Controller_Installer extends \Controller {
                 ->set(  'content', 
                         \Theme::instance()->view('admin_form', $data)
                     );
-	}
+    }
 
-	public function action_finish() {
+    public function action_finish() {
 
         //set installed to true - this will be checked in the routes
         //to disable the access to the installer
@@ -350,7 +350,7 @@ class Controller_Installer extends \Controller {
                 ->set(  'content', 
                         \Theme::instance()->view('finish')
                     );
-	}
+    }
 
     //get all existing migration files
     //started in the app migration directory
@@ -360,48 +360,62 @@ class Controller_Installer extends \Controller {
         \Config::load('migrations', true);
 
         $migrations = array();
-
-        // loop through app to find migrations
-        foreach (glob(APPPATH.\Config::get('migrations.folder').'*_*.php') as $migration)
-        {
-            // Convert path to array
-            $migration = str_replace(array('/', '\\'), DS, $migration);
-            $migration = substr($migration, 0, strlen($migration)-4);
-            $migration = explode(DS, substr($migration, strlen(APPPATH)));
-            $fileName = explode('_', $migration[1]);
-            $migrations['app']['default'][] = $migration[1];
+        
+        $path = glob(APPPATH.\Config::get('migrations.folder').'*_*.php');
             
+        if($path) 
+        {
+            // loop through app to find migrations
+            foreach (glob(APPPATH.\Config::get('migrations.folder').'*_*.php') as $migration)
+            {
+                // Convert path to array
+                $migration = str_replace(array('/', '\\'), DS, $migration);
+                $migration = substr($migration, 0, strlen($migration)-4);
+                $migration = explode(DS, substr($migration, strlen(APPPATH)));
+                $fileName = explode('_', $migration[1]);
+                $migrations['app']['default'][] = $migration[1];                    }
+
         }
 
         // loop through packages to find migrations
         foreach(\Config::get('package_paths') as $packagePath)
         {
-            foreach (glob($packagePath.'*'.DS.\Config::get('migrations.folder').'*_*.php') as $migration)
+            $path = glob($packagePath.'*'.DS.\Config::get('migrations.folder').'*_*.php');
+            
+            if($path) 
             {
-                // Convert path to array
-                $migration = str_replace(array('/', '\\'), DS, $migration);
-                $migration = substr($migration, 0, strlen($migration)-4);
-                $migration = explode(DS, substr($migration, strlen(APPPATH)+3));
-                $fileName = explode('_', $migration[3]);
+                foreach (glob($packagePath.'*'.DS.\Config::get('migrations.folder').'*_*.php') as $migration)
+                {
+                    // Convert path to array
+                    $migration = str_replace(array('/', '\\'), DS, $migration);
+                    $migration = substr($migration, 0, strlen($migration)-4);
+                    $migration = explode(DS, substr($migration, strlen(APPPATH)+3));
+                    $fileName = explode('_', $migration[3]);
 
-                $migrations['package'][$migration[1]][] = $migration[3];
+                    $migrations['package'][$migration[1]][] = $migration[3];
 
+                }
             }
         }
-
+        
+        
         // loop through modules to find migrations
         foreach(\Config::get('module_paths') as $modulePath)
         {
-            foreach (glob($modulePath.'*'.DS.\Config::get('migrations.folder').'*_*.php') as $migration)
+            $path = glob($modulePath.'*'.DS.\Config::get('migrations.folder').'*_*.php');
+            
+            if($path) 
             {
-                // Convert path to array
-                $migration = str_replace(array('/', '\\'), DS, $migration);
-                $migration = substr($migration, 0, strlen($migration)-4);
-                $migration = explode(DS, substr($migration, strlen(APPPATH)+3));
-                $fileName = explode('_', $migration[3]);
+                foreach (glob($modulePath.'*'.DS.\Config::get('migrations.folder').'*_*.php') as $migration)
+                {
+                   // Convert path to array
+                   $migration = str_replace(array('/', '\\'), DS, $migration);
+                   $migration = substr($migration, 0, strlen($migration)-4);
+                   $migration = explode(DS, substr($migration, strlen(APPPATH)+3));
+                   $fileName = explode('_', $migration[3]);
 
-                $migrations['module'][$migration[1]][] = $migration[3];
-                
+                   $migrations['module'][$migration[1]][] = $migration[3];
+                }
             }
         }
 
